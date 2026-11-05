@@ -187,7 +187,7 @@
         </li>
       </ul>
     </div>
-    <form class="contact-form" action="mailto:info@bsa-bsl.ru" method="post" enctype="text/plain">
+    <form class="contact-form" id="contact-form" data-lang="ru">
       <div>
         <label for="name">Имя</label>
         <input id="name" name="name" type="text" placeholder="Ваше имя" required>
@@ -198,9 +198,10 @@
       </div>
       <div>
         <label for="message">Сообщение</label>
-        <textarea id="message" name="message" placeholder="Расскажите о задаче"></textarea>
+        <textarea id="message" name="message" placeholder="Расскажите о задаче" required></textarea>
       </div>
       <button type="submit" class="btn btn-gold">Отправить сообщение</button>
+      <p class="form-status" aria-live="polite"></p>
     </form>
   </div>
 </section>

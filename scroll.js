@@ -30,4 +30,47 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, { rootMargin: '-40% 0px -50% 0px' });
   sections.forEach((s) => navObserver.observe(s));
+
+  const form = document.getElementById('contact-form');
+  if (form) {
+    const isRu = form.dataset.lang !== 'en';
+    const statusEl = form.querySelector('.form-status');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const defaultLabel = submitBtn.textContent;
+    const msgs = isRu
+      ? { sending: 'Отправка…', ok: 'Спасибо! Сообщение отправлено.', fail: 'Не удалось отправить. Попробуйте написать на info@bsa-bsl.ru' }
+      : { sending: 'Sending…', ok: 'Thank you! Your message has been sent.', fail: 'Something went wrong. Please email info@bsa-bsl.ru directly.' };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        message: form.message.value.trim(),
+      };
+      submitBtn.disabled = true;
+      submitBtn.textContent = msgs.sending;
+      statusEl.textContent = '';
+
+      fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('bad response');
+          statusEl.textContent = msgs.ok;
+          statusEl.style.color = 'var(--gold-light)';
+          form.reset();
+        })
+        .catch(() => {
+          statusEl.textContent = msgs.fail;
+          statusEl.style.color = '#c0392b';
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = defaultLabel;
+        });
+    });
+  }
 });
